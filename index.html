@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Minha Terra - LandOS Dashboard</title>
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 3. Configure Tailwind & Add Custom LandOS Colors (from your PDF) -->
+    <style type="text/tailwindcss">
+        @layer base {
+            html {
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        @layer utilities {
+            .tab-active {
+                @apply border-green-800 text-green-800;
+            }
+            .tab-inactive {
+                @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'landos-green': {
+                            light: '#eef3eb', // Light beige-green for backgrounds
+                            DEFAULT: '#6b9080', // Main olive-green
+                            medium: '#4a6a5a',
+                            dark: '#2a483a', // Darkest green for sidebar/text
+                        },
+                        'landos-beige': '#f4f1ea',
+                        'landos-brown': '#a49e8d',
+                        'landos-terracotta': '#e57373', // Accent color
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Basic styles for scrollbars etc. -->
+    <style>
+        body {
+            background-color: #f4f1ea; /* landos-beige */
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a49e8d; /* landos-brown */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f4f1ea; /* landos-beige */
+        }
+        /* Style for the modal background */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-container {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex h-screen bg-landos-beige overflow-hidden">
+        
+        <!-- === Sidebar (Desktop) === -->
+        <aside class="z-30 w-64 hidden md:flex flex-col flex-shrink-0 h-full bg-landos-green-dark text-white">
+            <div class="h-20 flex items-center justify-center px-4 border-b border-landos-green-medium">
+                <div class="flex items-center">
+                    <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="50" fill="#f4f1ea"/>
+                        <path d="M50 28C50 28 45 38 40 40C35 42 30 40 30 40C30 40 35 48 40 50C45 52 50 62 50 62" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M50 28C50 28 55 38 60 40C65 42 70 40 70 40C70 40 65 48 60 50C55 52 50 62 50 62" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M40 70H60" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M35 75H65" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M30 80H70" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M50 62V70" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M50 20C52.7614 20 55 17.7614 55 15C55 12.2386 52.7614 10 50 10C47.2386 10 45 12.2386 45 15C45 17.7614 47.2386 20 50 20Z" fill="#a49e8d"/>
+                        <path d="M50 28C50 25.2386 47.7614 23 45 23C42.2386 23 40 25.2386 40 28C40 30.7614 42.2386 33 45 33C47.7614 33 50 30.7614 50 28Z" fill="#6b9080" fill-opacity="0.5"/>
+                    </svg>
+                    <span class="ml-3 text-2xl font-semibold text-white">LandOS</span>
+                </div>
+            </div>
+            <nav class="flex-1 py-4 space-y-2">
+                <a href="#dashboard" class="nav-link flex items-center px-6 py-3 text-gray-100 bg-landos-green-medium" data-view="dashboard-view">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="ml-3">Dashboard</span>
+                </a>
+                <a href="#land" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="land-view">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                    <span class="ml-3">My Parcels</span>
+                </a>
+                <a href="#marketplace" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="marketplace-view">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                    <span class="ml-3">Land Assembly</span>
+                </a>
+                <a href="#incubator" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="incubator-view">
+                    <i data-lucide="package-check" class="w-5 h-5"></i>
+                    <span class="ml-3">Project Incubator</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-landos-green-medium">
+                <a href="#settings" class="flex items-center px-4 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white rounded-lg" data-view="settings-view">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span class="ml-3">Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- === Mobile Sidebar & Overlay === -->
+        <div id="mobile-sidebar" class="fixed inset-0 z-40 flex md:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
+            <!-- Sidebar -->
+            <div class="relative w-64 max-w-xs flex-1 flex flex-col h-full bg-landos-green-dark text-white">
+                <div class="h-20 flex items-center justify-between px-4 border-b border-landos-green-medium">
+                    <div class="flex items-center">
+                        <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#f4f1ea"/><path d="M50 28C50 28 45 38 40 40C35 42 30 40 30 40C30 40 35 48 40 50C45 52 50 62 50 62" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 28C50 28 55 38 60 40C65 42 70 40 70 40C70 40 65 48 60 50C55 52 50 62 50 62" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 70H60" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/><path d="M35 75H65" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/><path d="M30 80H70" stroke="#a49e8d" stroke-width="4" stroke-linecap="round"/><path d="M50 62V70" stroke="#4a6a5a" stroke-width="4" stroke-linecap="round"/><path d="M50 20C52.7614 20 55 17.7614 55 15C55 12.2386 52.7614 10 50 10C47.2386 10 45 12.2386 45 15C45 17.7614 47.2386 20 50 20Z" fill="#a49e8d"/><path d="M50 28C50 25.2386 47.7614 23 45 23C42.2386 23 40 25.2386 40 28C40 30.7614 42.2386 33 45 33C47.7614 33 50 30.7614 50 28Z" fill="#6b9080" fill-opacity="0.5"/>
+                        </svg>
+                        <span class="ml-3 text-2xl font-semibold text-white">LandOS</span>
+                    </div>
+                    <button id="close-sidebar-btn" class="p-1 text-gray-300 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <nav class="flex-1 py-4 space-y-2">
+                    <a href="#dashboard" class="nav-link flex items-center px-6 py-3 text-gray-100 bg-landos-green-medium" data-view="dashboard-view">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span class="ml-3">Dashboard</span>
+                    </a>
+                    <a href="#land" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="land-view">
+                        <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        <span class="ml-3">My Parcels</span>
+                    </a>
+                    <a href="#marketplace" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="marketplace-view">
+                        <i data-lucide="layers" class="w-5 h-5"></i>
+                        <span class="ml-3">Land Assembly</span>
+                    </a>
+                    <a href="#incubator" class="nav-link flex items-center px-6 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white" data-view="incubator-view">
+                        <i data-lucide="package-check" class="w-5 h-5"></i>
+                        <span class="ml-3">Project Incubator</span>
+                    </a>
+                </nav>
+                <div class="p-4 border-t border-landos-green-medium">
+                    <a href="#settings" class="flex items-center px-4 py-3 text-gray-300 hover:bg-landos-green-medium hover:text-white rounded-lg" data-view="settings-view">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span class="ml-3">Settings</span>
+                    </a>
+                </div>
+            </div>
+            <!-- Overlay -->
+            <div id="sidebar-overlay" class="flex-1 h-full bg-black opacity-50"></div>
+        </div>
+
+        <!-- === Main Content === -->
+        <main class="flex-1 flex flex-col h-full overflow-y-auto">
+            <!-- Header -->
+            <header class="h-20 flex-shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white shadow-sm border-b border-gray-200 z-10">
+                <div class="flex items-center">
+                    <button id="open-sidebar-btn" class="md:hidden p-1 -ml-1 mr-3 text-gray-600 hover:text-gray-900">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="text-2xl font-semibold text-landos-green-dark" id="view-title">Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <img class="w-10 h-10 rounded-full object-cover" src="https://placehold.co/100x100/6b9080/f4f1ea?text=AS" alt="User Avatar">
+                        <div class="ml-3 hidden sm:block">
+                            <div class="font-medium text-landos-green-dark">Ana Silva</div>
+                            <div class="text-sm text-gray-500">Landowner</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+
+                <!-- === View: Dashboard === -->
+                <div id="dashboard-view" class="view-content">
+                    <h2 class="text-3xl font-semibold text-landos-green-dark mb-6">Welcome back, Ana!</h2>
+                    
+                    <!-- Action Items -->
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-lg mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-medium text-yellow-800">Action Required</h3>
+                                <div class="mt-2 text-sm text-yellow-700">
+                                    <p>Your parcel <a href="#land" class="nav-link font-bold underline" data-view="land-view" data-parcel="Quinta do Sol">Quinta do Sol</a> has a legal discrepancy (Area Mismatch) that needs to be resolved before starting a new project.</p>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="nav-link px-4 py-2 bg-yellow-400 text-yellow-900 font-medium rounded-md shadow-sm hover:bg-yellow-500" data-view="land-view" data-parcel="Quinta do Sol" data-goto-tab="report-tab">
+                                        Review Discrepancy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left Column: My Parcels -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-landos-green-dark">My Parcels</h3>
+                                <button id="add-parcel-btn" class="flex items-center text-sm font-medium text-landos-green-DEFAULT hover:text-landos-green-dark">
+                                    <i data-lucide="plus" class="w-4 h-4 mr-1"></i>
+                                    Add Parcel
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <!-- Parcel Card 1 -->
+                                <div class="border border-gray-200 p-4 rounded-lg flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
+                                    <div class="flex items-center">
+                                        <img src="https://placehold.co/80x80/eef3eb/4a6a5a?text=MAP" alt="Parcel Map" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-4">
+                                            <h4 class="text-lg font-semibold text-landos-green-dark">Quinta do Sol</h4>
+                                            <p class="text-sm text-gray-500">ID: 12345-AB</p>
+                                            <span class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                <i data-lucide="alert-triangle" class="w-3 h-3 mr-1"></i>
+                                                Action Required
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button class="nav-link text-landos-green-DEFAULT hover:text-landos-green-dark" data-view="land-view" data-parcel="Quinta do Sol">
+                                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                                    </button>
+                                </div>
+                                <!-- Parcel Card 2 -->
+                                <div class="border border-gray-200 p-4 rounded-lg flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
+                                    <div class="flex items-center">
+                                        <img src="https://placehold.co/80x80/eef3eb/4a6a5a?text=MAP" alt="Parcel Map" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-4">
+                                            <h4 class="text-lg font-semibold text-landos-green-dark">Pinhal Novo</h4>
+                                            <p class="text-sm text-gray-500">ID: 67890-CD</p>
+                                            <span class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i>
+                                                Report Generated
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button class="nav-link text-landos-green-DEFAULT hover:text-landos-green-dark" data-view="land-view" data-parcel="Pinhal Novo">
+                                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Quick Actions -->
+                        <div class="bg-white p-6 rounded-lg shadow-xl">
+                            <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <a href="#land" class="nav-link flex items-center p-3 bg-landos-green-light rounded-lg hover:bg-green-100 transition-colors" data-view="land-view">
+                                    <i data-lucide="file-text" class="w-5 h-5 text-landos-green-dark"></i>
+                                    <span class="ml-3 font-medium text-landos-green-dark">Generate New Report</span>
+                                </a>
+                                <a href="#marketplace" class="nav-link flex items-center p-3 bg-landos-green-light rounded-lg hover:bg-green-100 transition-colors" data-view="marketplace-view">
+                                    <i data-lucide="layers" class="w-5 h-5 text-landos-green-dark"></i>
+                                    <span class="ml-3 font-medium text-landos-green-dark">Explore Marketplace</span>
+                                </a>
+                                <a href="#incubator" class="nav-link flex items-center p-3 bg-landos-green-light rounded-lg hover:bg-green-100 transition-colors" data-view="incubator-view">
+                                    <i data-lucide="package-check" class="w-5 h-5 text-landos-green-dark"></i>
+                                    <span class="ml-3 font-medium text-landos-green-dark">Browse Project Kits</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- === View: My Parcels / Land Potential Report === -->
+                <div id="land-view" class="view-content" style="display: none;">
+                    <!-- Parcel Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                        <div>
+                            <button class="nav-link text-sm font-medium text-landos-green-DEFAULT hover:text-landos-green-dark flex items-center" data-view="dashboard-view">
+                                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                                Back to Dashboard
+                            </button>
+                            <h2 class="text-3xl font-semibold text-landos-green-dark mt-1" id="parcel-name-title">Quinta do Sol</h2>
+                        </div>
+                        <button id="refresh-data-btn" class="mt-3 sm:mt-0 flex items-center justify-center px-4 py-2 bg-landos-green-DEFAULT text-white rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 mr-2" id="refresh-icon"></i>
+                            <span id="refresh-text">Refresh Data</span>
+                        </button>
+                    </div>
+
+                    <!-- Parcel Map -->
+                    <div class="bg-white rounded-lg shadow-xl overflow-hidden mb-6">
+                        <img src="https://placehold.co/1200x400/eef3eb/4a6a5a?text=Interactive+Parcel+Map+for+'Quinta+do+Sol'" alt="Parcel Map" class="w-full h-64 object-cover">
+                    </div>
+                    
+                    <!-- Parcel Sub-Navigation (Report, Projects, Funding) -->
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                            <button class="parcel-tab-link border-b-2 py-4 px-1 text-sm font-medium tab-active" data-tab="report-tab">
+                                1. Land Potential Report
+                            </button>
+                            <button class="parcel-tab-link border-b-2 py-4 px-1 text-sm font-medium tab-inactive" data-tab="projects-tab">
+                                2. Compliance Navigator
+                            </button>
+                            <button class="parcel-tab-link border-b-2 py-4 px-1 text-sm font-medium tab-inactive" data-tab="funding-tab">
+                                3. Financial Opportunities
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content: 1. Land Potential Report -->
+                    <div id="report-tab" class="parcel-tab-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Left: Pathway Scores -->
+                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
+                                <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Pathway Suitability Scoring (1-10)</h3>
+                                <div class="space-y-5">
+                                    <!-- Score 1 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="font-medium text-landos-green-dark">Reforestation & Carbon Sequestration</span>
+                                            <span class="font-medium text-landos-green-dark">9/10</span>
+                                        </div>
+                                        <div class="w-full bg-landos-green-light rounded-full h-3">
+                                            <div class="bg-landos-green-DEFAULT h-3 rounded-full" style="width: 90%"></div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">High potential due to soil type and REN classification.</p>
+                                    </div>
+                                    <!-- Score 2 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="font-medium text-landos-green-dark">Regenerative Agriculture</span>
+                                            <span class="font-medium text-landos-green-dark">7/10</span>
+                                        </div>
+                                        <div class="w-full bg-landos-green-light rounded-full h-3">
+                                            <div class="bg-landos-green-DEFAULT h-3 rounded-full" style="width: 70%"></div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Good soil, falls within CAP priority area.</p>
+                                    </div>
+                                    <!-- Score 3 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="font-medium text-landos-green-dark">Eco-Tourism</span>
+                                            <span class="font-medium text-landos-green-dark">3/10</span>
+                                        </div>
+                                        <div class="w-full bg-landos-green-light rounded-full h-3">
+                                            <div class="bg-landos-terracotta h-3 rounded-full" style="width: 30%"></div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Low potential. Construction highly restricted by REN zoning.</p>
+                                    </div>
+                                    <!-- Score 4 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="font-medium text-landos-green-dark">Renewable Energy (Solar)</span>
+                                            <span class="font-medium text-landos-green-dark">2/10</span>
+                                        </div>
+                                        <div class="w-full bg-landos-green-light rounded-full h-3">
+                                            <div class="bg-landos-terracotta h-3 rounded-full" style="width: 20%"></div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Low potential. Far from grid substation (High connection cost).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Legal & Zoning -->
+                            <div class="space-y-6">
+                                <div class="bg-white p-6 rounded-lg shadow-xl">
+                                    <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Legal & Administrative Status</h3>
+                                    <ul class="space-y-3 text-sm">
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Land Registry (Predial):</span>
+                                            <span class="font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Match</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Tax Authority (Caderneta):</span>
+                                            <span class="font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded-full">Flagged</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Discrepancy:</span>
+                                            <span class="font-medium text-red-700">Area Mismatch</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Registered Heirs:</span>
+                                            <span class="font-medium text-landos-green-dark">1 (Resolved)</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Encumbrances:</span>
+                                            <span class="font-medium text-landos-green-dark">None</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-xl">
+                                    <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Zoning & Permitting Analysis</h3>
+                                    <ul class="space-y-3 text-sm">
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Municipal Plan (PDM):</span>
+                                            <span class="font-medium text-landos-green-dark">Aljezur</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Classification:</span>
+                                            <span class="font-medium text-landos-green-dark">Rústico (Rural)</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Reserve Status:</span>
+                                            <span class="font-medium text-red-700">REN (Ecological)</span>
+                                        </li>
+                                        <li class="flex justify-between items-center">
+                                            <span class="text-gray-600">Construction:</span>
+                                            <span class="font-medium text-red-700">Highly Restricted</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="bg-landos-green-light p-6 rounded-lg shadow-lg">
+                                    <h3 class="text-xl font-semibold text-landos-green-dark mb-3">Recommended Next Steps</h3>
+                                    <p class="text-sm text-landos-green-dark mb-4">Based on your report, Reforestation is the highest-potential, lowest-friction pathway.</p>
+                                    <button class="parcel-tab-link w-full px-4 py-2 bg-landos-green-DEFAULT text-white rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all" data-tab="projects-tab">
+                                        Start Reforestation Project Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: 2. Compliance Navigator -->
+                    <div id="projects-tab" class="parcel-tab-content" style="display: none;">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Main Project Column -->
+                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
+                                <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Project: Reforestation & Carbon Credits</h3>
+                                <!-- This is the checklist -->
+                                <div class="space-y-6">
+                                    <!-- Step 1 -->
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 1: Legal & Admin Prep</h4>
+                                        <div class="space-y-3">
+                                            <label class="flex items-center p-4 bg-yellow-50 rounded-lg border border-yellow-300 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium">
+                                                <span class="ml-3 text-md font-medium text-yellow-900">Resolve Caderneta/Predial Area Mismatch</span>
+                                                <button class="ml-auto text-xs font-medium text-landos-green-DEFAULT hover:underline">Connect with Vetted Lawyer</button>
+                                            </label>
+                                            <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium" checked disabled>
+                                                <span class="ml-3 text-md font-medium text-gray-500 line-through">Confirm REN status with Câmara Municipal</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Step 2 -->
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 2: Project Planning</h4>
+                                        <div class="space-y-3">
+                                            <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium">
+                                                <span class="ml-3 text-md font-medium text-gray-700">Develop Project Plan (VCS Standard)</span>
+                                                <button class="nav-link ml-auto text-xs font-medium text-landos-green-DEFAULT hover:underline" data-view="incubator-view">Use Incubator Kit</button>
+                                            </label>
+                                             <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium">
+                                                <span class="ml-3 text-md font-medium text-gray-700">Partner with Certified Reforestation Entity</span>
+                                                <button class="ml-auto text-xs font-medium text-landos-green-DEFAULT hover:underline">See Partners</button>
+                                            </label>
+                                        </div>
+                                    </div>
+                                     <!-- Step 3 -->
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 3: Permitting & Funding</h4>
+                                        <div class="space-y-3">
+                                            <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium">
+                                                <span class="ml-3 text-md font-medium text-gray-700">Submit Plan to APA (Environmental Agency)</span>
+                                            </label>
+                                             <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-landos-green-DEFAULT focus:ring-landos-green-medium">
+                                                <span class="ml-3 text-md font-medium text-gray-700">Apply for CAP Eco-Scheme (via Funding Engine)</span>
+                                                <button class="ml-auto text-xs font-medium text-landos-green-DEFAULT hover:underline parcel-tab-link" data-tab="funding-tab">Go to Funding</button>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Side Column: Document Hub -->
+                            <div class="bg-white p-6 rounded-lg shadow-xl">
+                                <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Secure Document Hub</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                                        <div class="flex items-center truncate">
+                                            <i data-lucide="file-text" class="w-5 h-5 text-blue-500 flex-shrink-0"></i>
+                                            <span class="ml-2 text-sm font-medium truncate">Certidão_Permanente.pdf</span>
+                                        </div>
+                                            <span class="text-xs text-gray-500">2.1MB</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                                        <div class="flex items-center truncate">
+                                            <i data-lucide="file-text" class="w-5 h-5 text-blue-500 flex-shrink-0"></i>
+                                            <span class="ml-2 text-sm font-medium truncate">Caderneta_Predial.pdf</span>
+                                        </div>
+                                            <span class="text-xs text-gray-500">1.8MB</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+                                        <div class="flex items-center truncate">
+                                            <i data-lucide="file-warning" class="w-5 h-5 text-red-500 flex-shrink-0"></i>
+                                            <span class="ml-2 text-sm font-medium text-red-700 truncate">Plano_Reforestacao.pdf</span>
+                                        </div>
+                                        <span class="text-xs text-red-600">Missing</span>
+                                    </div>
+                                    <button class="w-full mt-2 flex items-center justify-center px-4 py-2 border border-dashed border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
+                                        <i data-lucide="upload-cloud" class="w-4 h-4 mr-2"></i>
+                                        Upload Document
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content: 3. Financial Opportunities Engine -->
+                    <div id="funding-tab" class="parcel-tab-content" style="display: none;">
+                        <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Matched Opportunities for "Reforestation Project"</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Funding Card 1 -->
+                            <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                                <div class="p-5">
+                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Public Grant</span>
+                                    <h4 class="text-lg font-semibold text-landos-green-dark mt-3">CAP Eco-Scheme 4: Reforestation</h4>
+                                    <p class="text-sm text-gray-600 mt-1">EU/National grant supporting planting of native species.</p>
+                                </div>
+                                <div class="border-t border-gray-200 px-5 py-3 bg-gray-50 mt-auto">
+                                    <p class="text-sm text-gray-700"><span class="font-medium">Value:</span> €XXX per hectare/year</p>
+                                    <p class="text-sm text-gray-700 mt-1"><span class="font-medium">Match:</span> 95% (High)</p>
+                                    <button class="w-full mt-3 px-4 py-2 bg-landos-green-DEFAULT text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                                        Add to Project Plan
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Funding Card 2 -->
+                            <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                                <div class="p-5">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Philanthropic</span>
+                                    <h4 class="text-lg font-semibold text-landos-green-dark mt-3">Private Carbon Fund (ImpactCo)</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Upfront funding in exchange for future carbon credits.</p>
+                                </div>
+                                <div class="border-t border-gray-200 px-5 py-3 bg-gray-50 mt-auto">
+                                    <p class="text-sm text-gray-700"><span class="font-medium">Value:</span> Varies (Est. €X,XXX)</p>
+                                    <p class="text-sm text-gray-700 mt-1"><span class="font-medium">Match:</span> 80% (Medium)</p>
+                                    <button class="w-full mt-3 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-200 transition-colors">
+                                        Contact Partner
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Funding Card 3 -->
+                            <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                                <div class="p-5">
+                                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Tax Incentive</span>
+                                    <h4 class="text-lg font-semibold text-landos-green-dark mt-3">RFAI (Asset Investment)</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Tax credit for investment in equipment (e.g., irrigation).</p>
+                                </div>
+                                <div class="border-t border-gray-200 px-5 py-3 bg-gray-50 mt-auto">
+                                    <p class="text-sm text-gray-700"><span class="font-medium">Value:</span> Up to 25% of investment</p>
+                                    <p class="text-sm text-gray-700 mt-1"><span class="font-medium">Match:</span> 60% (Requires Equipment)</p>
+                                    <button class="w-full mt-3 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-200 transition-colors">
+                                        Learn More
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- === View: Land Assembly Marketplace === -->
+                <div id="marketplace-view" class="view-content" style="display: none;">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left: Map -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
+                            <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Land Assembly Marketplace</h3>
+                            <div class="relative rounded-lg overflow-hidden">
+                                <img src="https://placehold.co/1000x600/eef3eb/4a6a5a?text=Interactive+Map+of+Adjacent+Parcels" alt="Marketplace Map" class="w-full h-auto">
+                                <!-- My Parcel Overlay -->
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-4 border-blue-500 bg-blue-500 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer transform hover:scale-110 transition-transform">
+                                    <span class="text-white font-bold text-center">My Parcel<br>(Quinta do Sol)</span>
+                                </div>
+                                <!-- Adjacent Parcel 1 -->
+                                <div class="absolute top-1/3 left-1/4 w-24 h-20 border-2 border-gray-400 bg-gray-400 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer hover:bg-opacity-50 transition-colors">
+                                    <span class="text-gray-700 font-medium text-sm text-center">Parcel A</span>
+                                </div>
+                                <!-- Adjacent Parcel 2 (Match) -->
+                                <div class="absolute top-2/3 left-1/3 w-28 h-24 border-2 border-yellow-500 bg-yellow-500 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer transform hover:scale-110 transition-transform">
+                                    <span class="text-yellow-800 font-medium text-sm text-center">Parcel B<br>(Match!)</span>
+                                </div>
+                                <!-- Adjacent Parcel 3 -->
+                                <div class="absolute top-1/2 left-3/4 w-20 h-40 border-2 border-gray-400 bg-gray-400 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer hover:bg-opacity-50 transition-colors">
+                                    <span class="text-gray-700 font-medium text-sm text-center">Parcel C</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Signaling & Matches -->
+                        <div class="space-y-6">
+                            <!-- Private Signaling -->
+                            <div class="bg-white p-6 rounded-lg shadow-xl">
+                                <h3 class="text-xl font-semibold text-landos-green-dark mb-4">My Private Signaling</h3>
+                                <p class="text-sm text-gray-600 mb-4">Your signals are <span class="font-bold">only</span> visible to the owners of your adjacent parcels.</p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <label for="signal-buy" class="font-medium text-gray-700">I am interested in BUYING</label>
+                                        <input type="checkbox" id="signal-buy" class="h-6 w-11 rounded-full bg-gray-200 relative inline-flex flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-landos-green-medium focus:ring-offset-2 checked:bg-landos-green-DEFAULT" role="switch" aria-checked="false">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="signal-sell" class="font-medium text-gray-700">I am open to SELLING</label>
+                                        <input type="checkbox" id="signal-sell" class="h-6 w-11 rounded-full bg-gray-200 relative inline-flex flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-landos-green-medium focus:ring-offset-2 checked:bg-landos-green-DEFAULT" role="switch" aria-checked="true">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="signal-lease" class="font-medium text-gray-700">I am open to LEASING</to>
+                                        <input type="checkbox" id="signal-lease" class="h-6 w-11 rounded-full bg-gray-200 relative inline-flex flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-landos-green-medium focus:ring-offset-2 checked:bg-landos-green-DEFAULT" role="switch" aria-checked="false">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Matches -->
+                            <div class="bg-white p-6 rounded-lg shadow-xl">
+                                <h3 class="text-xl font-semibold text-landos-green-dark mb-4">My Matches (1)</h3>
+                                <div class="border border-yellow-300 bg-yellow-50 p-4 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-200 flex items-center justify-center">
+                                            <i data-lucide="bell" class="w-5 h-5 text-yellow-700"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h4 class="font-semibold text-yellow-900">New Match Found!</h4>
+                                            <p class="text-sm text-yellow-800">Owner of 'Parcel B' is also 'Open to Selling'.</p>
+                                        </div>
+                                    </div>
+                                    <button class="w-full mt-3 px-4 py-2 bg-landos-green-DEFAULT text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                                        Send Anonymous Message
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Developer Heat Map (Info) -->
+                            <div class="bg-landos-green-light p-4 rounded-lg shadow-lg">
+                                <div class="flex items-start">
+                                    <i data-lucide="info" class="w-5 h-5 text-landos-green-dark flex-shrink-0 mt-0.5"></i>
+                                    <div class="ml-3">
+                                        <h4 class="font-semibold text-landos-green-dark">For Project Developers</h4>
+                                        <p class="text-sm text-landos-green-dark mt-1">Vetted developers can see anonymized "heat maps" of interest to identify areas for large-scale projects (solar, forestry) more easily.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- === View: Sustainable Project Incubator === -->
+                <div id="incubator-view" class="view-content" style="display: none;">
+                    <h3 class="text-3xl font-semibold text-landos-green-dark mb-2">Sustainable Project Incubator</h3>
+                    <p class="text-lg text-gray-600 mb-6">De-risk your project with a "Business-in-a-Box" blueprint and expert mentorship.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Blueprint Card 1 -->
+                        <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                            <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Carbon+Sink" alt="Carbon Sink Kit" class="w-full h-48 object-cover">
+                            <div class="p-5 flex-1 flex flex-col">
+                                <h4 class="text-lg font-semibold text-landos-green-dark">The Smallholder Carbon Sink Kit</h4>
+                                <p class="text-sm text-gray-600 mt-2 flex-1">A complete blueprint for reforestation and carbon credit sales, partnered with certified verifiers.</p>
+                                <ul class="text-sm text-gray-700 mt-3 space-y-1 list-disc list-inside">
+                                    <li>Standardized Legal Contract</li>
+                                    <li>Native Species Planting Plan</li>
+                                    <li>Financial Projections</li>
+                                </ul>
+                            </div>
+                            <div class="border-t border-gray-200 p-5 bg-gray-50 mt-auto">
+                                <span class="text-2xl font-bold text-landos-green-dark">€499</span>
+                                <span class="text-sm text-gray-600">/ one-time</span>
+                                <button class="w-full mt-3 px-4 py-2 bg-landos-green-DEFAULT text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                                    Purchase Blueprint
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Blueprint Card 2 -->
+                        <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                            <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Eco+Pod" alt="Eco Pod Kit" class="w-full h-48 object-cover">
+                            <div class="p-5 flex-1 flex flex-col">
+                                <h4 class="text-lg font-semibold text-landos-green-dark">The Off-Grid Tourism Pod Kit</h4>
+                                <p class="text-sm text-gray-600 mt-2 flex-1">Launch your eco-tourism business with pre-approved plans and a full marketing guide.</p>
+                                <ul class="text-sm text-gray-700 mt-3 space-y-1 list-disc list-inside">
+                                    <li>Compliant "Tiny House" Plans</li>
+                                    <li>Alojamento Local Business Plan</li>
+                                    <li>Sustainable Materials List</li>
+                                </ul>
+                            </div>
+                            <div class="border-t border-gray-200 p-5 bg-gray-50 mt-auto">
+                                <span class="text-2xl font-bold text-landos-green-dark">€799</span>
+                                <span class="text-sm text-gray-600">/ one-time</span>
+                                <button class="w-full mt-3 px-4 py-2 bg-landos-green-DEFAULT text-white text-sm font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                                    Purchase Blueprint
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Blueprint Card 3 -->
+                        <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
+                            <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Vineyard" alt="Vineyard Kit" class="w-full h-48 object-cover">
+                            <div class="p-5 flex-1 flex flex-col">
+                                <h4 class="text-lg font-semibold text-landos-green-dark">The Alentejo Regenerative Vineyard</h4>
+                                <p class="text-sm text-gray-600 mt-2 flex-1">A guide to syntropic agroforestry for vineyards, complete with CAP subsidy models.</p>
+                                <ul class="text-sm text-gray-700 mt-3 space-y-1 list-disc list-inside">
+                                    <li>Drought-Resistant Variety List</li>
+                                    <li>CAP Financial Model</li>
+                                    <li>Local Co-op Directory</li>
+                                </ul>
+                            </div>
+                            <div class="border-t border-gray-200 p-5 bg-gray-50 mt-auto">
+                                <span class="text-2xl font-bold text-landos-green-dark">€649</span>
+                                <span class="text-sm text-gray-600">/ one-time</span>
+                                <button class="w-full mt-3 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-200 transition-colors">
+                                    Coming Soon
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- === View: Settings === -->
+                <div id="settings-view" class="view-content" style="display: none;">
+                    <h2 class="text-3xl font-semibold text-landos-green-dark mb-6">Settings</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg">
+                        <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Profile</h3>
+                        <form class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                <input type="text" id="name" value="Ana Silva" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-landos-green-medium focus:ring-landos-green-medium">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" value="ana.silva@email.com" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-landos-green-medium focus:ring-landos-green-medium">
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-landos-green-DEFAULT text-white rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- === Modal: Add Parcel === -->
+    <div id="add-parcel-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 opacity-0 pointer-events-none">
+        <div class="modal-container bg-white w-full max-w-md p-6 rounded-lg shadow-2xl transform scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-semibold text-landos-green-dark">Add New Parcel</h3>
+                <button id="close-modal-btn" class="p-1 text-gray-500 hover:text-gray-800">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="add-parcel-form" class="space-y-4">
+                <div>
+                    <label for="parcel-nickname" class="block text-sm font-medium text-gray-700">Parcel Nickname</label>
+                    <input type="text" id="parcel-nickname" placeholder="e.g., Quinta do Sol" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-landos-green-medium focus:ring-landos-green-medium" required>
+                </div>
+                <div>
+                    <label for="parcel-id" class="block text-sm font-medium text-gray-700">Parcel ID (Caderneta Predial)</label>
+                    <input type="text" id="parcel-id" placeholder="e.g., 12345-AB" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-landos-green-medium focus:ring-landos-green-medium" required>
+                </div>
+                <div>
+                    <label for="parcel-location" class="block text-sm font-medium text-gray-700">Location (Municipality)</label>
+                    <input type="text" id="parcel-location" placeholder="e.g., Aljezur" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-landos-green-medium focus:ring-landos-green-medium" required>
+                </div>
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-landos-green-DEFAULT text-white rounded-lg shadow-md hover:shadow-lg hover:bg-landos-green-medium transition-all">
+                        Add and Analyze Parcel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Icon initialization ---
+            lucide.createIcons();
+
+            // --- State ---
+            const state = {
+                currentView: 'dashboard-view',
+                currentParcel: 'Quinta do Sol',
+                currentParcelTab: 'report-tab'
+            };
+
+            // --- Selectors ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const views = document.querySelectorAll('.view-content');
+            const viewTitle = document.getElementById('view-title');
+            const parcelTabLinks = document.querySelectorAll('.parcel-tab-link');
+            const parcelTabs = document.querySelectorAll('.parcel-tab-content');
+            const parcelNameTitle = document.getElementById('parcel-name-title');
+            
+            // Mobile Sidebar
+            const openBtn = document.getElementById('open-sidebar-btn');
+            const closeBtn = document.getElementById('close-sidebar-btn');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const mobileSidebar = document.getElementById('mobile-sidebar');
+            
+            // Modal
+            const modal = document.getElementById('add-parcel-modal');
+            const modalContainer = modal.querySelector('.modal-container');
+            const openModalBtn = document.getElementById('add-parcel-btn');
+            const closeModalBtns = [
+                document.getElementById('close-modal-btn'),
+                document.getElementById('cancel-modal-btn'),
+            ];
+            
+            // Parcel-specific
+            const refreshBtn = document.getElementById('refresh-data-btn');
+            const refreshIcon = document.getElementById('refresh-icon');
+            const refreshText = document.getElementById('refresh-text');
+
+            // Store titles
+            const viewTitles = {
+                'dashboard-view': 'Dashboard',
+                'land-view': 'My Parcels',
+                'marketplace-view': 'Land Assembly Marketplace',
+                'incubator-view': 'Project Incubator',
+                'settings-view': 'Settings'
+            };
+            
+            // --- Functions ---
+
+            /**
+             * Shows a specific view (page) and hides others
+             * @param {string} viewId - The ID of the view to show
+             */
+            const showView = (viewId) => {
+                if (!viewId || !viewTitles[viewId]) {
+                    console.warn(`View ID "${viewId}" not found. Defaulting to dashboard.`);
+                    viewId = 'dashboard-view';
+                }
+                state.currentView = viewId;
+
+                views.forEach(view => {
+                    view.style.display = view.id === viewId ? 'block' : 'none';
+                });
+                viewTitle.textContent = viewTitles[viewId];
+                
+                // Update active link
+                navLinks.forEach(link => {
+                    if (link.dataset.view === viewId) {
+                        link.classList.add('bg-landos-green-medium', 'text-white');
+                        link.classList.remove('text-gray-300');
+                    } else {
+                        link.classList.remove('bg-landos-green-medium', 'text-white');
+                        link.classList.add('text-gray-300');
+                    }
+                });
+                
+                closeMobileSidebar();
+                window.location.hash = viewId.split('-')[0];
+            };
+
+            /**
+             * Shows a specific tab within the "My Parcels" view
+             * @param {string} tabId - The ID of the tab content to show
+             */
+            const showParcelTab = (tabId) => {
+                if (!tabId) {
+                    console.warn(`Tab ID "${tabId}" not found. Defaulting to report-tab.`);
+                    tabId = 'report-tab';
+                }
+                state.currentParcelTab = tabId;
+
+                // Hide all tabs
+                parcelTabs.forEach(tab => {
+                    tab.style.display = 'none';
+                });
+                // Show active tab
+                const activeTab = document.getElementById(tabId);
+                if (activeTab) {
+                    activeTab.style.display = 'block';
+                }
+
+                // Update link styles
+                parcelTabLinks.forEach(l => {
+                    if (l.dataset.tab === tabId) {
+                        l.classList.add('tab-active');
+                        l.classList.remove('tab-inactive');
+                    } else {
+                        l.classList.remove('tab-active');
+                        l.classList.add('tab-inactive');
+                    }
+                });
+            };
+
+            const openMobileSidebar = () => mobileSidebar.classList.remove('-translate-x-full');
+            const closeMobileSidebar = () => mobileSidebar.classList.add('-translate-x-full');
+
+            const openModal = () => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modalContainer.classList.remove('scale-95', 'opacity-0');
+            };
+
+            const closeModal = () => {
+                modalContainer.classList.add('scale-95', 'opacity-0');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                document.getElementById('add-parcel-form').reset();
+            };
+
+            // --- Event Listeners ---
+
+            // Main View Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = link.dataset.view;
+                    const parcelName = link.dataset.parcel;
+                    const gotoTab = link.dataset.gotoTab;
+                    
+                    if (parcelName) {
+                        state.currentParcel = parcelName;
+                        parcelNameTitle.textContent = parcelName;
+                    }
+                    
+                    showView(viewId);
+
+                    // If the link also specifies a sub-tab (e.g., from the alert box)
+                    if (gotoTab) {
+                        showParcelTab(gotoTab);
+                    }
+                });
+            });
+
+            // Parcel Sub-Tab Navigation
+            parcelTabLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const tabId = link.dataset.tab;
+                    showParcelTab(tabId);
+                });
+            });
+
+            // Mobile Sidebar
+            openBtn.addEventListener('click', openMobileSidebar);
+            closeBtn.addEventListener('click', closeMobileSidebar);
+            sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+            // Modal
+            openModalBtn.addEventListener('click', openModal);
+            closeModalBtns.forEach(btn => btn.addEventListener('click', closeModal));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.getElementById('add-parcel-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // In a real app, you'd submit this data
+                console.log('New Parcel Added (simulated)');
+                closeModal();
+            });
+
+            // Refresh Data Button
+            refreshBtn.addEventListener('click', () => {
+                refreshText.textContent = 'Refreshing...';
+                refreshIcon.classList.add('animate-spin');
+                refreshBtn.disabled = true;
+
+                setTimeout(() => {
+                    refreshText.textContent = 'Refresh Data';
+                    refreshIcon.classList.remove('animate-spin');
+                    refreshBtn.disabled = false;
+                    console.log('Data refreshed (simulated)');
+                }, 2000);
+            });
+
+            // --- Initial View Loading (from URL hash) ---
+            const initialHash = window.location.hash.substring(1);
+            if (initialHash) {
+                const initialViewId = initialHash + '-view';
+                if (viewTitles[initialViewId]) {
+                    showView(initialViewId);
+                } else {
+                    showView('dashboard-view');
+                }
+            } else {
+                showView('dashboard-view');
+            }
+
+            // --- Toggle Switch Simple Visual Logic ---
+            document.querySelectorAll('input[type="checkbox"][role="switch"]').forEach(toggle => {
+                const updateToggleState = () => {
+                    if (toggle.checked) {
+                        toggle.classList.add('bg-landos-green-DEFAULT');
+                        toggle.classList.remove('bg-gray-200');
+                    } else {
+                        toggle.classList.remove('bg-landos-green-DEFAULT');
+                        toggle.classList.add('bg-gray-200');
+                    }
+                };
+                toggle.addEventListener('change', updateToggleState);
+                updateToggleState(); // Set initial state
+            });
+
+        });
+    </script>
+
+</body>
+</html>
+
+
