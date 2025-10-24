@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Minha Terra - LandOS Dashboard</title>
-    <!-- 1. Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. Load Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- 3. Configure Tailwind & Add Custom LandOS Colors (from your PDF) -->
     <style type="text/tailwindcss">
         @layer base {
             html {
@@ -45,7 +42,6 @@
             }
         }
     </script>
-    <!-- Basic styles for scrollbars etc. -->
     <style>
         body {
             background-color: #f4f1ea; /* landos-beige */
@@ -74,7 +70,6 @@
 
     <div class="flex h-screen bg-landos-beige overflow-hidden">
         
-        <!-- === Sidebar (Desktop) === -->
         <aside class="z-30 w-64 hidden md:flex flex-col flex-shrink-0 h-full bg-landos-green-dark text-white">
             <div class="h-20 flex items-center justify-center px-4 border-b border-landos-green-medium">
                 <div class="flex items-center">
@@ -122,9 +117,7 @@
             </div>
         </aside>
 
-        <!-- === Mobile Sidebar & Overlay === -->
         <div id="mobile-sidebar" class="fixed inset-0 z-40 flex md:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
-            <!-- Sidebar -->
             <div class="relative w-64 max-w-xs flex-1 flex flex-col h-full bg-landos-green-dark text-white">
                 <div class="h-20 flex items-center justify-between px-4 border-b border-landos-green-medium">
                     <div class="flex items-center">
@@ -166,13 +159,10 @@
                     </a>
                 </div>
             </div>
-            <!-- Overlay -->
             <div id="sidebar-overlay" class="flex-1 h-full bg-black opacity-50"></div>
         </div>
 
-        <!-- === Main Content === -->
         <main class="flex-1 flex flex-col h-full overflow-y-auto">
-            <!-- Header -->
             <header class="h-20 flex-shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white shadow-sm border-b border-gray-200 z-10">
                 <div class="flex items-center">
                     <button id="open-sidebar-btn" class="md:hidden p-1 -ml-1 mr-3 text-gray-600 hover:text-gray-900">
@@ -194,14 +184,11 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
-                <!-- === View: Dashboard === -->
                 <div id="dashboard-view" class="view-content">
                     <h2 class="text-3xl font-semibold text-landos-green-dark mb-6">Welcome back, Ana!</h2>
                     
-                    <!-- Action Items -->
                     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-lg mb-6">
                         <div class="flex">
                             <div class="flex-shrink-0">
@@ -222,7 +209,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Left Column: My Parcels -->
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-xl font-semibold text-landos-green-dark">My Parcels</h3>
@@ -232,7 +218,6 @@
                                 </button>
                             </div>
                             <div class="space-y-4">
-                                <!-- Parcel Card 1 -->
                                 <div class="border border-gray-200 p-4 rounded-lg flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
                                     <div class="flex items-center">
                                         <img src="https://placehold.co/80x80/eef3eb/4a6a5a?text=MAP" alt="Parcel Map" class="w-16 h-16 rounded-lg object-cover">
@@ -249,7 +234,6 @@
                                         <i data-lucide="chevron-right" class="w-6 h-6"></i>
                                     </button>
                                 </div>
-                                <!-- Parcel Card 2 -->
                                 <div class="border border-gray-200 p-4 rounded-lg flex items-center justify-between hover:shadow-lg transition-shadow duration-300">
                                     <div class="flex items-center">
                                         <img src="https://placehold.co/80x80/eef3eb/4a6a5a?text=MAP" alt="Parcel Map" class="w-16 h-16 rounded-lg object-cover">
@@ -269,7 +253,6 @@
                             </div>
                         </div>
 
-                        <!-- Right Column: Quick Actions -->
                         <div class="bg-white p-6 rounded-lg shadow-xl">
                             <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Quick Actions</h3>
                             <div class="space-y-3">
@@ -290,9 +273,7 @@
                     </div>
                 </div>
 
-                <!-- === View: My Parcels / Land Potential Report === -->
                 <div id="land-view" class="view-content" style="display: none;">
-                    <!-- Parcel Header -->
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                         <div>
                             <button class="nav-link text-sm font-medium text-landos-green-DEFAULT hover:text-landos-green-dark flex items-center" data-view="dashboard-view">
@@ -307,12 +288,10 @@
                         </button>
                     </div>
 
-                    <!-- Parcel Map -->
                     <div class="bg-white rounded-lg shadow-xl overflow-hidden mb-6">
                         <img src="https://placehold.co/1200x400/eef3eb/4a6a5a?text=Interactive+Parcel+Map+for+'Quinta+do+Sol'" alt="Parcel Map" class="w-full h-64 object-cover">
                     </div>
                     
-                    <!-- Parcel Sub-Navigation (Report, Projects, Funding) -->
                     <div class="border-b border-gray-200 mb-6">
                         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                             <button class="parcel-tab-link border-b-2 py-4 px-1 text-sm font-medium tab-active" data-tab="report-tab">
@@ -327,14 +306,11 @@
                         </nav>
                     </div>
 
-                    <!-- Tab Content: 1. Land Potential Report -->
                     <div id="report-tab" class="parcel-tab-content">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Left: Pathway Scores -->
                             <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
                                 <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Pathway Suitability Scoring (1-10)</h3>
                                 <div class="space-y-5">
-                                    <!-- Score 1 -->
                                     <div>
                                         <div class="flex justify-between mb-1">
                                             <span class="font-medium text-landos-green-dark">Reforestation & Carbon Sequestration</span>
@@ -345,7 +321,6 @@
                                         </div>
                                         <p class="text-sm text-gray-600 mt-1">High potential due to soil type and REN classification.</p>
                                     </div>
-                                    <!-- Score 2 -->
                                     <div>
                                         <div class="flex justify-between mb-1">
                                             <span class="font-medium text-landos-green-dark">Regenerative Agriculture</span>
@@ -356,7 +331,6 @@
                                         </div>
                                         <p class="text-sm text-gray-600 mt-1">Good soil, falls within CAP priority area.</p>
                                     </div>
-                                    <!-- Score 3 -->
                                     <div>
                                         <div class="flex justify-between mb-1">
                                             <span class="font-medium text-landos-green-dark">Eco-Tourism</span>
@@ -367,7 +341,6 @@
                                         </div>
                                         <p class="text-sm text-gray-600 mt-1">Low potential. Construction highly restricted by REN zoning.</p>
                                     </div>
-                                    <!-- Score 4 -->
                                     <div>
                                         <div class="flex justify-between mb-1">
                                             <span class="font-medium text-landos-green-dark">Renewable Energy (Solar)</span>
@@ -381,7 +354,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Right: Legal & Zoning -->
                             <div class="space-y-6">
                                 <div class="bg-white p-6 rounded-lg shadow-xl">
                                     <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Legal & Administrative Status</h3>
@@ -440,15 +412,11 @@
                         </div>
                     </div>
 
-                    <!-- Tab Content: 2. Compliance Navigator -->
                     <div id="projects-tab" class="parcel-tab-content" style="display: none;">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Main Project Column -->
                             <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
                                 <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Project: Reforestation & Carbon Credits</h3>
-                                <!-- This is the checklist -->
                                 <div class="space-y-6">
-                                    <!-- Step 1 -->
                                     <div>
                                         <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 1: Legal & Admin Prep</h4>
                                         <div class="space-y-3">
@@ -463,7 +431,6 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <!-- Step 2 -->
                                     <div>
                                         <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 2: Project Planning</h4>
                                         <div class="space-y-3">
@@ -479,8 +446,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                     <!-- Step 3 -->
-                                    <div>
+                                     <div>
                                         <h4 class="text-lg font-semibold text-landos-green-dark mb-3">Phase 3: Permitting & Funding</h4>
                                         <div class="space-y-3">
                                             <label class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
@@ -496,7 +462,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Side Column: Document Hub -->
                             <div class="bg-white p-6 rounded-lg shadow-xl">
                                 <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Secure Document Hub</h3>
                                 <div class="space-y-3">
@@ -505,14 +470,14 @@
                                             <i data-lucide="file-text" class="w-5 h-5 text-blue-500 flex-shrink-0"></i>
                                             <span class="ml-2 text-sm font-medium truncate">Certidão_Permanente.pdf</span>
                                         </div>
-                                            <span class="text-xs text-gray-500">2.1MB</span>
+                                        <span class="text-xs text-gray-500">2.1MB</span>
                                     </div>
                                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
                                         <div class="flex items-center truncate">
                                             <i data-lucide="file-text" class="w-5 h-5 text-blue-500 flex-shrink-0"></i>
                                             <span class="ml-2 text-sm font-medium truncate">Caderneta_Predial.pdf</span>
                                         </div>
-                                            <span class="text-xs text-gray-500">1.8MB</span>
+                                        <span class="text-xs text-gray-500">1.8MB</span>
                                     </div>
                                     <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
                                         <div class="flex items-center truncate">
@@ -530,11 +495,9 @@
                         </div>
                     </div>
                     
-                    <!-- Tab Content: 3. Financial Opportunities Engine -->
                     <div id="funding-tab" class="parcel-tab-content" style="display: none;">
                         <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Matched Opportunities for "Reforestation Project"</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Funding Card 1 -->
                             <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                                 <div class="p-5">
                                     <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Public Grant</span>
@@ -549,7 +512,6 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Funding Card 2 -->
                             <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                                 <div class="p-5">
                                     <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Philanthropic</span>
@@ -564,7 +526,6 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Funding Card 3 -->
                             <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                                 <div class="p-5">
                                     <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Tax Incentive</span>
@@ -583,36 +544,28 @@
                     </div>
                 </div>
 
-                <!-- === View: Land Assembly Marketplace === -->
                 <div id="marketplace-view" class="view-content" style="display: none;">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Left: Map -->
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl">
                             <h3 class="text-xl font-semibold text-landos-green-dark mb-4">Land Assembly Marketplace</h3>
                             <div class="relative rounded-lg overflow-hidden">
                                 <img src="https://placehold.co/1000x600/eef3eb/4a6a5a?text=Interactive+Map+of+Adjacent+Parcels" alt="Marketplace Map" class="w-full h-auto">
-                                <!-- My Parcel Overlay -->
                                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-4 border-blue-500 bg-blue-500 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer transform hover:scale-110 transition-transform">
                                     <span class="text-white font-bold text-center">My Parcel<br>(Quinta do Sol)</span>
                                 </div>
-                                <!-- Adjacent Parcel 1 -->
                                 <div class="absolute top-1/3 left-1/4 w-24 h-20 border-2 border-gray-400 bg-gray-400 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer hover:bg-opacity-50 transition-colors">
                                     <span class="text-gray-700 font-medium text-sm text-center">Parcel A</span>
                                 </div>
-                                <!-- Adjacent Parcel 2 (Match) -->
                                 <div class="absolute top-2/3 left-1/3 w-28 h-24 border-2 border-yellow-500 bg-yellow-500 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer transform hover:scale-110 transition-transform">
                                     <span class="text-yellow-800 font-medium text-sm text-center">Parcel B<br>(Match!)</span>
                                 </div>
-                                <!-- Adjacent Parcel 3 -->
                                 <div class="absolute top-1/2 left-3/4 w-20 h-40 border-2 border-gray-400 bg-gray-400 bg-opacity-30 rounded-md flex items-center justify-center cursor-pointer hover:bg-opacity-50 transition-colors">
                                     <span class="text-gray-700 font-medium text-sm text-center">Parcel C</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Right: Signaling & Matches -->
                         <div class="space-y-6">
-                            <!-- Private Signaling -->
                             <div class="bg-white p-6 rounded-lg shadow-xl">
                                 <h3 class="text-xl font-semibold text-landos-green-dark mb-4">My Private Signaling</h3>
                                 <p class="text-sm text-gray-600 mb-4">Your signals are <span class="font-bold">only</span> visible to the owners of your adjacent parcels.</p>
@@ -632,7 +585,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Matches -->
                             <div class="bg-white p-6 rounded-lg shadow-xl">
                                 <h3 class="text-xl font-semibold text-landos-green-dark mb-4">My Matches (1)</h3>
                                 <div class="border border-yellow-300 bg-yellow-50 p-4 rounded-lg">
@@ -651,7 +603,6 @@
                                 </div>
                             </div>
 
-                            <!-- Developer Heat Map (Info) -->
                             <div class="bg-landos-green-light p-4 rounded-lg shadow-lg">
                                 <div class="flex items-start">
                                     <i data-lucide="info" class="w-5 h-5 text-landos-green-dark flex-shrink-0 mt-0.5"></i>
@@ -665,13 +616,11 @@
                     </div>
                 </div>
                 
-                <!-- === View: Sustainable Project Incubator === -->
                 <div id="incubator-view" class="view-content" style="display: none;">
                     <h3 class="text-3xl font-semibold text-landos-green-dark mb-2">Sustainable Project Incubator</h3>
                     <p class="text-lg text-gray-600 mb-6">De-risk your project with a "Business-in-a-Box" blueprint and expert mentorship.</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Blueprint Card 1 -->
                         <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                             <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Carbon+Sink" alt="Carbon Sink Kit" class="w-full h-48 object-cover">
                             <div class="p-5 flex-1 flex flex-col">
@@ -691,7 +640,6 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Blueprint Card 2 -->
                         <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                             <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Eco+Pod" alt="Eco Pod Kit" class="w-full h-48 object-cover">
                             <div class="p-5 flex-1 flex flex-col">
@@ -711,7 +659,6 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Blueprint Card 3 -->
                         <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300">
                             <img src="https://placehold.co/400x250/eef3eb/4a6a5a?text=Vineyard" alt="Vineyard Kit" class="w-full h-48 object-cover">
                             <div class="p-5 flex-1 flex flex-col">
@@ -734,7 +681,6 @@
                     </div>
                 </div>
 
-                <!-- === View: Settings === -->
                 <div id="settings-view" class="view-content" style="display: none;">
                     <h2 class="text-3xl font-semibold text-landos-green-dark mb-6">Settings</h2>
                     <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg">
@@ -753,12 +699,10 @@
                     </div>
                 </div>
 
-                <!-- === View: Founder Ecosystem View === -->
                 <div id="founder-view" class="view-content" style="display: none;">
                     <h2 class="text-3xl font-semibold text-landos-green-dark mb-2">Founder View: Ecosystem KPIs</h2>
                     <p class="text-lg text-gray-600 mb-6">High-level metrics for the B2C, B2B, and B2G platforms.</p>
 
-                    <!-- KPI Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="bg-white p-5 rounded-lg shadow-xl">
                             <div class="flex items-center">
@@ -806,9 +750,7 @@
                         </div>
                     </div>
 
-                    <!-- B2B and B2G Views -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- B2B: Partner Portal View -->
                         <div class="bg-white p-6 rounded-lg shadow-2xl">
                             <h3 class="text-xl font-semibold text-landos-green-dark mb-1">Partner Portal (B2B View)</h3>
                             <p class="text-sm text-gray-600 mb-4">What solar & forestry partners see: Aggregated, anonymized land *intent*.</p>
@@ -823,7 +765,6 @@
                             </div>
                         </div>
 
-                        <!-- B2G: Municipality Portal View -->
                         <div class="bg-white p-6 rounded-lg shadow-2xl">
                             <h3 class="text-xl font-semibold text-landos-green-dark mb-1">Municipality Portal (B2G View)</h3>
                             <p class="text-sm text-gray-600 mb-4">What a *Câmara* sees: Anonymized analytics for better public planning.</p>
@@ -867,7 +808,6 @@
         </main>
     </div>
 
-    <!-- === Modal: Add Parcel === -->
     <div id="add-parcel-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 opacity-0 pointer-events-none">
         <div class="modal-container bg-white w-full max-w-md p-6 rounded-lg shadow-2xl transform scale-95 opacity-0">
             <div class="flex justify-between items-center mb-4">
@@ -930,7 +870,7 @@
             
             // Modal
             const modal = document.getElementById('add-parcel-modal');
-            const modalContainer = modal.querySelector('.modal-container');
+            const modalContainer = modal ? modal.querySelector('.modal-container') : null;
             const openModalBtn = document.getElementById('add-parcel-btn');
             const closeModalBtns = [
                 document.getElementById('close-modal-btn'),
@@ -941,6 +881,9 @@
             const refreshBtn = document.getElementById('refresh-data-btn');
             const refreshIcon = document.getElementById('refresh-icon');
             const refreshText = document.getElementById('refresh-text');
+
+            // Add-Parcel Form
+            const addParcelForm = document.getElementById('add-parcel-form');
 
             // Store titles
             const viewTitles = {
@@ -968,7 +911,9 @@
                 views.forEach(view => {
                     view.style.display = view.id === viewId ? 'block' : 'none';
                 });
-                viewTitle.textContent = viewTitles[viewId];
+                if(viewTitle) {
+                    viewTitle.textContent = viewTitles[viewId];
+                }
                 
                 // Update active link
                 navLinks.forEach(link => {
@@ -1018,18 +963,28 @@
                 });
             };
 
-            const openMobileSidebar = () => mobileSidebar.classList.remove('-translate-x-full');
-            const closeMobileSidebar = () => mobileSidebar.classList.add('-translate-x-full');
+            const openMobileSidebar = () => {
+                if(mobileSidebar) mobileSidebar.classList.remove('-translate-x-full');
+            };
+            const closeMobileSidebar = () => {
+                if(mobileSidebar) mobileSidebar.classList.add('-translate-x-full');
+            };
 
             const openModal = () => {
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                modalContainer.classList.remove('scale-95', 'opacity-0');
+                if(modal && modalContainer) {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContainer.classList.remove('scale-95', 'opacity-0');
+                }
             };
 
             const closeModal = () => {
-                modalContainer.classList.add('scale-95', 'opacity-0');
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                document.getElementById('add-parcel-form').reset();
+                if(modal && modalContainer) {
+                    modalContainer.classList.add('scale-95', 'opacity-0');
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                }
+                if(addParcelForm) {
+                    addParcelForm.reset();
+                }
             };
 
             // --- Event Listeners ---
@@ -1042,7 +997,7 @@
                     const parcelName = link.dataset.parcel;
                     const gotoTab = link.dataset.gotoTab;
                     
-                    if (parcelName) {
+                    if (parcelName && parcelNameTitle) {
                         state.currentParcel = parcelName;
                         parcelNameTitle.textContent = parcelName;
                     }
@@ -1065,36 +1020,44 @@
             });
 
             // Mobile Sidebar
-            openBtn.addEventListener('click', openMobileSidebar);
-            closeBtn.addEventListener('click', closeMobileSidebar);
-            sidebarOverlay.addEventListener('click', closeMobileSidebar);
+            if(openBtn) openBtn.addEventListener('click', openMobileSidebar);
+            if(closeBtn) closeBtn.addEventListener('click', closeMobileSidebar);
+            if(sidebarOverlay) sidebarOverlay.addEventListener('click', closeMobileSidebar);
 
             // Modal
-            openModalBtn.addEventListener('click', openModal);
-            closeModalBtns.forEach(btn => btn.addEventListener('click', closeModal));
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
+            if(openModalBtn) openModalBtn.addEventListener('click', openModal);
+            closeModalBtns.forEach(btn => {
+                if(btn) btn.addEventListener('click', closeModal);
             });
-            document.getElementById('add-parcel-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                // In a real app, you'd submit this data
-                console.log('New Parcel Added (simulated)');
-                closeModal();
-            });
+            if(modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+            if(addParcelForm) {
+                addParcelForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // In a real app, you'd submit this data
+                    console.log('New Parcel Added (simulated)');
+                    closeModal();
+                });
+            }
 
             // Refresh Data Button
-            refreshBtn.addEventListener('click', () => {
-                refreshText.textContent = 'Refreshing...';
-                refreshIcon.classList.add('animate-spin');
-                refreshBtn.disabled = true;
+            if(refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    if(refreshText) refreshText.textContent = 'Refreshing...';
+                    if(refreshIcon) refreshIcon.classList.add('animate-spin');
+                    refreshBtn.disabled = true;
 
-                setTimeout(() => {
-                    refreshText.textContent = 'Refresh Data';
-                    refreshIcon.classList.remove('animate-spin');
-                    refreshBtn.disabled = false;
-                    console.log('Data refreshed (simulated)');
-                }, 2000);
-            });
+                    setTimeout(() => {
+                        if(refreshText) refreshText.textContent = 'Refresh Data';
+                        if(refreshIcon) refreshIcon.classList.remove('animate-spin');
+                        refreshBtn.disabled = false;
+                        console.log('Data refreshed (simulated)');
+                    }, 2000);
+                });
+            }
 
             // --- Initial View Loading (from URL hash) ---
             const initialHash = window.location.hash.substring(1);
@@ -1129,6 +1092,3 @@
 
 </body>
 </html>
-
-
-
